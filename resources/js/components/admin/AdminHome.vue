@@ -1,17 +1,6 @@
 <template>
     <div class="admin-home-container">
-        <div class="header-section">
-            <h1 class="page-title">Admin Dashboard</h1>
-            <div class="user-info" v-if="email">
-                <span>Logged in as: <strong>{{ email }}</strong></span>
-                <div class="actions">
-                    <router-link :to="{ name: 'admin-settings' }" class="btn-secondary">Price Settings</router-link>
-                    <router-link :to="{ name: 'admin-change-password' }" class="btn-secondary">Change
-                        Password</router-link>
-                    <button @click="logout" class="btn-logout">Logout</button>
-                </div>
-            </div>
-        </div>
+        <AdminHeader />
 
         <div class="orders-section">
             <h2 class="section-title">All Orders</h2>
@@ -119,6 +108,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { CONSTANTS } from '../../constants';
+import AdminHeader from './AdminHeader.vue';
 import axios from 'axios';
 import { checkApiStatusForAdmin } from '../../utils/apiUtils';
 

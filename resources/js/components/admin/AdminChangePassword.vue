@@ -1,4 +1,5 @@
 <template>
+    <AdminHeader />
     <div class="change-password-container">
         <h2>Admin Change Password</h2>
         <form @submit.prevent="changePassword">
@@ -27,6 +28,7 @@
 import { reactive, ref } from 'vue';
 import { CONSTANTS } from '../../constants';
 import { checkApiStatusForAdmin } from '../../utils/apiUtils';
+import AdminHeader from './AdminHeader.vue';
 
 const form = reactive({
     current_password: '',
@@ -88,7 +90,14 @@ const changePassword = async () => {
 </script>
 
 <style scoped>
-.change-password-container { max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+.change-password-container { 
+    max-width: 400px;
+     margin: 50px auto;
+      padding: 20px; 
+      border: 1px solid #ccc; 
+      border-radius: 8px; 
+
+}
 .form-group { margin-bottom: 15px; }
 label { display: block; margin-bottom: 5px; font-weight: bold; }
 .form-control { width: 100%; padding: 8px; box-sizing: border-box; }

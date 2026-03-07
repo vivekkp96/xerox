@@ -286,7 +286,7 @@ onMounted(async () => {
     }, CONSTANTS.FETCH_MEMORY_STATS_API_DELAY_70);
     intervalId2 = setInterval(() => {
         fetchCpuLoadStats();
-    }, CONSTANTS.FETCH_MEMORY_STATS_API_DELAY_40);
+    }, CONSTANTS.FETCH_MEMORY_STATS_API_DELAY_30);
     intervalId3 = setInterval(() => {
         fetchMysqlStats();
     }, CONSTANTS.FETCH_MEMORY_STATS_API_DELAY_70);

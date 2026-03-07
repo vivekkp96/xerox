@@ -1,9 +1,6 @@
 <template>
     <div class="admin-settings-container">
-        <div class="header-section">
-            <h1 class="page-title">Settings</h1>
-            <router-link :to="{ name: 'admin-home' }" class="btn-back">Back to Dashboard</router-link>
-        </div>
+        <AdminHeader />
 
         <div v-if="showLaminationSettings">
             <LaminationSettings
@@ -46,6 +43,7 @@ import PrintPrices from './PrintPrices.vue'
 import UPIPaymentImage from './UPIPaymentImage.vue'
 import LaminationSettings from './LaminationSettings.vue'
 import { showSuccess, showError } from '../../utils/toast'
+import AdminHeader from './AdminHeader.vue';
 
 const route = useRoute()
 const printPricesKey = ref(0)
