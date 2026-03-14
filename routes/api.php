@@ -21,6 +21,8 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\LaminationController;
+use App\Http\Controllers\ActiveUserController;
+use App\Http\Controllers\AdminUserController;
 
 Route::get('/v1/user', function (Request $request) {
     return $request->user;
@@ -85,6 +87,8 @@ Route::middleware(JwtMiddleware::class)->get('/v1/admin/system-memory', [SuperAd
 Route::middleware(JwtMiddleware::class)->get('/v1/admin/disk-space', [SuperAdminController::class, 'getDiskSpace']);
 Route::middleware(JwtMiddleware::class)->get('/v1/admin/mysql-usage', [SuperAdminController::class, 'getMysqlUsage']);
 Route::middleware(JwtMiddleware::class)->get('/v1/admin/cpu-load', [SuperAdminController::class, 'getCpuLoad']);
+Route::middleware(JwtMiddleware::class)->get('/v1/admin/active-users/count', [ActiveUserController::class, 'count']);
+Route::middleware(JwtMiddleware::class)->get('/v1/admin/active-users/peak-records', [ActiveUserController::class, 'peakRecords']);
 
 Route::middleware(JwtMiddleware::class)->get('/v1/admin/settings/upi-id', [SettingController::class, 'getUpiId']);
 Route::middleware(JwtMiddleware::class)->post('/v1/admin/settings/upi-id', [SettingController::class, 'updateUpiId']);
@@ -104,3 +108,6 @@ Route::middleware(JwtMiddleware::class)->delete('/v2/order/document/{id}', [Orde
 Route::middleware(JwtMiddleware::class)->get('/v1/notifications', [NotificationController::class, 'index']);
 Route::middleware(JwtMiddleware::class)->patch('/v1/notifications/{id}', [NotificationController::class, 'update']);
 Route::middleware(JwtMiddleware::class)->get('/v1/notifications/unread-count', [NotificationController::class, 'countUnread']);
+
+Route::middleware(JwtMiddleware::class)->get('/v1/admin/users', [AdminUserController::class, 'index']);
+Route::middleware(JwtMiddleware::class)->get('/v1/admin/users/{id}', [AdminUserController::class, 'show']);

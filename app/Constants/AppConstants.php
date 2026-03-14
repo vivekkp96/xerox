@@ -23,4 +23,11 @@ class AppConstants
     const ADMIN_ROLE_ADMIN = 'Admin';
     const ADMIN_ROLE_SUPER_ADMIN = 'Super Admin';
 
+    const USER_LAST_ACTIVITY_MINUTES = 5;
+
+
+    const CALCULATE_USER_PEAK_LIST_MINUTES = 30;
+    
+    const CALCULATE_USER_PEAK_LIST_ACTIVE_COUNT = 10;
+    
 }

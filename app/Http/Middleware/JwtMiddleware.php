@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\User;
+use App\Constants\AppConstants;
 use App\Models\Admin;
+use Illuminate\Support\Carbon;
 
 class JwtMiddleware
 {
@@ -59,6 +61,11 @@ class JwtMiddleware
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 401);
             }
+            
+            if (!$user->last_activity || Carbon::parse($user->last_activity)->lt(now()->subMinutes(AppConstants::USER_LAST_ACTIVITY_MINUTES))) {
+                $user->forceFill(['last_activity' => now()])->save();
+            }
+            
             $request->merge(['user' => $user]);
         }
 

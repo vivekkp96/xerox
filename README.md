@@ -9,6 +9,7 @@ php artisan migrate
 php artisan migrate --path=database/migrations/2024_01_01_000000_create_pre_users_table.php
 php artisan db:seed AdminSeeder
 php artisan db:seed SettingSeeder
+php artisan db:seed ReportSeeder
 php artisan migrate:rollback
 npm install
 npm install vue@3 vue-router@4

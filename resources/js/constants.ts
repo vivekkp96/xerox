@@ -10,6 +10,10 @@ export const CONSTANTS = {
         PATCH_ADMIN_ORDERS: '/api/v1/admin/orders/',
         USER_ME: '/api/v1/me',
         USER_CHANGE_PASSWORD: '/api/v1/change-password',
+        ADMIN_MYSQL_USAGE: '/api/v1/admin/mysql-usage',
+        ADMIN_DISK_SPACE: '/api/v1/admin/disk-space',
+        ADMIN_SYSTEM_MEMORY: '/api/v1/admin/system-memory',
+        ADMIN_CPU_LOAD: '/api/v1/admin/cpu-load',
     },
     ROUTE: {
         HOME: '/home',
@@ -45,5 +49,6 @@ export const CONSTANTS = {
         RED: "#dc3545",
         GREEN: "#28a745",
         ORANGE: "#fd7e14"
-    }
+    },
+    USER_LAST_ACTIVITY_MINUTES: 15
 }
