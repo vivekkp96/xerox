@@ -49,7 +49,7 @@ const fetchLaminationAmount = async () => {
     loading.value = true;
     try {
         const token = getAuthToken();
-        const response = await axios.get('/api/v1/admin/settings/lamination-amount', {
+        const response = await axios.get('/api/v1/settings/lamination-amount', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         laminationAmount.value = response.data.value;

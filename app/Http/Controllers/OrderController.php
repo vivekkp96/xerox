@@ -77,6 +77,7 @@ class OrderController extends Controller
             'documents.*.configurations.*.pages' => ['required', 'string', 'regex:/^((All)|(\d+(\s*-\s*\d+)?(\s*,\s*\d+(\s*-\s*\d+)?)*))$/i'],
             'documents.*.configurations.*.paper_size_id' => 'required|integer|exists:paper_sizes,id',
             'documents.*.configurations.*.number_of_copies' => 'required|integer|min:1',
+            'documents.*.configurations.*.lamination' => 'required|boolean',
             'documents.*.configurations.*.comment' => 'nullable|string|max:255',
             'documents.*.configurations.*.price' => 'required|numeric',
             'total_price' => 'required|numeric',
@@ -139,6 +140,7 @@ class OrderController extends Controller
                     'paper_size_id' => $config['paper_size_id'],
                     'number_of_copies' => $config['number_of_copies'],
                     'pages' => $config['pages'],
+                    'lamination' => $config['lamination'],
                     'comment' => $config['comment'] ?? null,
                     'totalPrice' => $config['price'],
                 ];
@@ -224,6 +226,7 @@ class OrderController extends Controller
             'documents.*.configurations.*.pages' => ['required', 'string', 'regex:/^((All)|(\d+(\s*-\s*\d+)?(\s*,\s*\d+(\s*-\s*\d+)?)*))$/i'],
             'documents.*.configurations.*.paper_size_id' => 'required|integer|exists:paper_sizes,id',
             'documents.*.configurations.*.number_of_copies' => 'required|integer|min:1',
+            'documents.*.configurations.*.lamination' => 'required|boolean',
             'documents.*.configurations.*.comment' => 'nullable|string|max:255',
             'documents.*.configurations.*.price' => 'required|numeric',
             'total_price' => 'sometimes|numeric',
@@ -280,6 +283,7 @@ class OrderController extends Controller
                         'paper_size_id' => $config['paper_size_id'],
                         'number_of_copies' => $config['number_of_copies'],
                         'pages' => $config['pages'],
+                        'lamination' => $config['lamination'],
                         'comment' => $config['comment'] ?? null,
                         'totalPrice' => $config['price'],
                     ];

@@ -115,6 +115,13 @@
                                         </option>
                                     </select>
                                 </div>
+                                <div class="option-group group-lamination" v-if="isLaminationAvailable(config.paper_size_id)">
+                                    <label class="option-label">Lamination</label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" v-model="config.lamination">
+                                        <span class="checkbox-text">Laminate (+₹{{ getLaminationAmount(config.paper_size_id) }}/pg)</span>
+                                    </label>
+                                </div>
                                 <div class="option-group group-mode">
                                     <label class="option-label">Mode</label>
                                     <select v-model="config.mode_id" class="form-control">
@@ -429,7 +436,7 @@ const calculateNumberOfPages = (pagesString, totalPages) => {
 
 const getConfigurationPrice = (config, doc) => {
     const mode = printModes.value.find(m => m.id === config.mode_id);
-    const size = paperSizes.value.find(s => s.id === config.paper_size_id);
+    const size = paperSizes.value.find(s => s.id == config.paper_size_id);
     const configForPrice = { ...config, mode: mode?.value, size: size?.value };
 
     return calculateConfigPrice(
@@ -439,6 +446,16 @@ const getConfigurationPrice = (config, doc) => {
         printModes.value,
         paperSizes.value
     ) * (config.number_of_copies || 1);
+};
+
+const isLaminationAvailable = (paperSizeId) => {
+    const size = activePaperSizes.value.find(s => s.id == paperSizeId);
+    return size && size.lamination_amount != null && size.lamination_amount !== '';
+};
+
+const getLaminationAmount = (paperSizeId) => {
+    const size = activePaperSizes.value.find(s => s.id == paperSizeId);
+    return size ? size.lamination_amount : 0;
 };
 
 const totalOrderPrice = computed(() => {
@@ -571,6 +588,7 @@ const processFiles = async (fileList) => {
                 pages: 'All',
                 paper_size_id: defaultSize?.id,
                 number_of_copies: 1,
+                lamination: false,
                 comment: '',
                 errors: {},
             }]
@@ -599,6 +617,7 @@ const addConfiguration = (docIndex) => {
         pages: 'All',
         paper_size_id: defaultSize?.id,
         number_of_copies: 1,
+        lamination: false,
         comment: '',
         errors: {},
     });
@@ -626,13 +645,21 @@ onMounted(async () => {
             }
         };
 
-        const [paperSizeResponse, printModeResponse, printPriceResponse] = await Promise.all([
+        const [paperSizeResponse, printModeResponse, printPriceResponse, laminationResponse] = await Promise.all([
             axios.get('/api/v1/paper-sizes', config),
             axios.get('/api/v1/print-modes', config),
-            axios.get('/api/v1/print-prices', config)
+            axios.get('/api/v1/print-prices', config),
+            axios.get('/api/v1/settings/lamination-amount', config)
         ]);
 
-        paperSizes.value = paperSizeResponse.data;
+        const laminationAmount = laminationResponse.data.value;
+        paperSizes.value = paperSizeResponse.data.map(size => {
+            return {
+                ...size,
+                lamination_amount: laminationAmount
+            };
+        });
+
         printModes.value = printModeResponse.data;
         printPrices.value = printPriceResponse.data;
 
@@ -682,6 +709,7 @@ const loadOrderData = async () => {
                         pages: copy.pages,
                         paper_size_id: copy.paper_size_id,
                         number_of_copies: copy.number_of_copies || 1,
+                        lamination: !!copy.lamination,
                         comment: copy.comment || '',
                         price: parseFloat(copy.totalPrice),
                         errors: {}
@@ -1142,12 +1170,13 @@ const submitOrder = async () => {
     }
     .group-paper,
     .group-mode,
-    .group-orientation {
+    .group-orientation,
+    .group-lamination {
         grid-column: span 2;
     }
     .group-pages,
     .group-copies {
-        grid-column: span 3;
+        grid-column: span 2;
     }
     .group-comment,
     .group-total-print-pages,

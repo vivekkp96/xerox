@@ -125,6 +125,14 @@
                                 </select>
                             </div>
 
+                            <div class="option-group group-lamination" v-if="isLaminationAvailable(copy.paper_size_id)">
+                                <label class="option-label">Lamination</label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" v-model="copy.lamination" @change="updateCopy(doc.filename, index, copy)">
+                                    <span class="checkbox-text">Laminate (+₹{{ getLaminationAmount(copy.paper_size_id) }}/pg)</span>
+                                </label>
+                            </div>
+
                             <div class="option-group group-mode">
                                 <label class="option-label">Mode</label>
                                 <select v-model="copy.mode_id" @change="updateCopy(doc.filename, index, copy)" class="form-control">
@@ -422,6 +430,16 @@ const getOrientationSvg = (id) => {
     return orientation ? orientation.svg : null;
 };
 
+const isLaminationAvailable = (paperSizeId) => {
+    const size = activePaperSizes.value.find(s => s.id == paperSizeId);
+    return size && size.lamination_amount != null && size.lamination_amount !== '';
+};
+
+const getLaminationAmount = (paperSizeId) => {
+    const size = activePaperSizes.value.find(s => s.id == paperSizeId);
+    return size ? size.lamination_amount : 0;
+};
+
 const calculatePerPagePrice = (totalPrice, copies, pages) => {
     const c = copies || 1;
     const p = pages || 1;
@@ -437,12 +455,20 @@ const selectOrientation = (filename, index, copy, orientationId) => {
 const fetchConstants = async () => {
     try {
         const config = getAuthConfig();
-        const [sizesRes, modesRes, pricesRes] = await Promise.all([
+        const [sizesRes, modesRes, pricesRes, laminationRes] = await Promise.all([
             axios.get('/api/v1/paper-sizes', config),
             axios.get('/api/v1/print-modes', config),
-            axios.get('/api/v1/print-prices', config)
+            axios.get('/api/v1/print-prices', config),
+            axios.get('/api/v1/settings/lamination-amount', config)
         ]);
-        paperSizes.value = sizesRes.data;
+        const laminationAmount = laminationRes.data.value;
+        paperSizes.value = sizesRes.data.map(size => {
+            return {
+                ...size,
+                lamination_amount: laminationAmount
+            };
+        });
+
         printModes.value = modesRes.data;
         printPrices.value = pricesRes.data;
         // Use local utility for print orientations
@@ -463,6 +489,17 @@ const fetchOrder = async () => {
         const config = getAuthConfig();
         const response = await axios.get(`/api/v1/orders/${orderId}`, config);
         order.value = response.data;
+
+        // Ensure lamination is boolean for all copies
+        if (order.value && order.value.documents) {
+            Object.values(order.value.documents).forEach(doc => {
+                if (doc.copies) {
+                    Object.values(doc.copies).forEach(copy => {
+                        copy.lamination = !!copy.lamination;
+                    });
+                }
+            });
+        }
     } catch (e) {
         if (e.response) {
             checkApiStatus(e.response.status);
@@ -525,11 +562,19 @@ const updateCopy = async (filename, copyIndex, copy) => {
     }
 
     const mode = printModes.value.find(m => m.id === copy.mode_id);
-    const size = paperSizes.value.find(s => s.id === copy.paper_size_id);
+    const size = paperSizes.value.find(s => s.id == copy.paper_size_id);
     const configForPrice = { ...copy, mode: mode?.value, size: size?.value };
 
-    const price = getConfigurationPrice(configForPrice, docTotalPages, printPrices.value, printModes.value, paperSizes.value) * (copy.number_of_copies || 1);
-    
+    let price = getConfigurationPrice(configForPrice, docTotalPages, printPrices.value, printModes.value, paperSizes.value) * (copy.number_of_copies || 1);
+
+    // Optimistic update
+    const oldPrice = copy.totalPrice;
+    const priceDiff = price - oldPrice;
+    copy.totalPrice = price;
+    if (order.value) {
+        order.value.total_price = Number(order.value.total_price) + priceDiff;
+    }
+
     try {
         const config = getAuthConfig();
         const response = await axios.patch(`/api/v2/order/copy/${orderId}`, {
@@ -542,8 +587,26 @@ const updateCopy = async (filename, copyIndex, copy) => {
             }
         }, config);
         order.value = response.data.order;
+
+        // Ensure lamination is boolean for all copies
+        if (order.value && order.value.documents) {
+            Object.values(order.value.documents).forEach(doc => {
+                if (doc.copies) {
+                    Object.values(doc.copies).forEach(c => {
+                        c.lamination = !!c.lamination;
+                    });
+                }
+            });
+        }
+
         toast.success('Copy updated successfully');
     } catch (e) {
+        // Revert optimistic update
+        copy.totalPrice = oldPrice;
+        if (order.value) {
+            order.value.total_price = Number(order.value.total_price) - priceDiff;
+        }
+
         if (e.response) {
             checkApiStatus(e.response.status);
         }
@@ -564,10 +627,11 @@ const addCopy = async (filename) => {
         pages: `1-${totalPages}`,
         paper_size_id: defaultSize?.id,
         number_of_copies: 1,
+        lamination: false,
         comment: '',
     };
 
-    const price = getConfigurationPrice({ ...newCopyConfig, mode: defaultMode?.value, size: defaultSize?.value }, totalPages, printPrices.value, printModes.value, paperSizes.value) * 1;
+    let price = getConfigurationPrice({ ...newCopyConfig, mode: defaultMode?.value, size: defaultSize?.value }, totalPages, printPrices.value, printModes.value, paperSizes.value) * 1;
 
     const newCopy = {
         ...newCopyConfig,
@@ -756,10 +820,11 @@ const processFiles = async (fileList) => {
                 pages: isManual ? 'All' : `1-${totalPages}`,
                 paper_size_id: defaultSize?.id,
                 number_of_copies: 1,
+                lamination: false,
                 comment: '',
             };
 
-            const price = getConfigurationPrice({ ...newConfig, mode: defaultMode?.value, size: defaultSize?.value }, totalPages, printPrices.value, printModes.value, paperSizes.value) * 1;
+            let price = getConfigurationPrice({ ...newConfig, mode: defaultMode?.value, size: defaultSize?.value }, totalPages, printPrices.value, printModes.value, paperSizes.value) * 1;
 
             const payload = {
                 file_base64: base64,
@@ -1277,6 +1342,22 @@ onMounted(async () => {
     border-color: #ef4444;
 }
 
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 42px;
+    padding: 0 0.5rem;
+    border: 1px solid #bfdbfe;
+    border-radius: 0.5rem;
+    background-color: white;
+    cursor: pointer;
+}
+.checkbox-text {
+    font-size: 0.9rem;
+    color: #334155;
+}
+
 .document-options {
     display: grid;
     grid-template-columns: 1fr;
@@ -1290,12 +1371,13 @@ onMounted(async () => {
     }
     .group-paper,
     .group-mode,
-    .group-orientation {
+    .group-orientation,
+    .group-lamination {
         grid-column: span 2;
     }
     .group-pages,
     .group-copies {
-        grid-column: span 3;
+        grid-column: span 2;
     }
     .group-comment,
     .group-total-print-pages,

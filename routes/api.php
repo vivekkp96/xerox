@@ -90,7 +90,7 @@ Route::middleware(JwtMiddleware::class)->get('/v1/admin/settings/upi-id', [Setti
 Route::middleware(JwtMiddleware::class)->post('/v1/admin/settings/upi-id', [SettingController::class, 'updateUpiId']);
 Route::middleware(JwtMiddleware::class)->delete('/v1/admin/settings/upi-id', [SettingController::class, 'deleteUpiId']);
 
-Route::middleware(JwtMiddleware::class)->get('/v1/admin/settings/lamination-amount', [LaminationController::class, 'getLaminationAmount']);
+Route::middleware(JwtMiddleware::class)->get('/v1/settings/lamination-amount', [LaminationController::class, 'getLaminationAmount']);
 Route::middleware(JwtMiddleware::class)->post('/v1/admin/settings/lamination-amount', [LaminationController::class, 'updateLaminationAmount']);
 Route::middleware(JwtMiddleware::class)->delete('/v1/admin/settings/lamination-amount', [LaminationController::class, 'deleteLaminationAmount']);
 

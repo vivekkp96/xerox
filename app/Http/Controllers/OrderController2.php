@@ -105,6 +105,7 @@ class OrderController2 extends Controller
             'copy.pages' => 'required|string',
             'copy.paper_size_id' => 'required|integer|exists:paper_sizes,id',
             'copy.number_of_copies' => 'required|integer|min:1',
+            'copy.lamination' => 'required|boolean',
             'copy.comment' => 'nullable|string|max:255',
             'copy.price' => 'required|numeric',
         ]);
@@ -137,6 +138,7 @@ class OrderController2 extends Controller
             'paper_size_id' => $newCopyData['paper_size_id'],
             'number_of_copies' => $newCopyData['number_of_copies'],
             'pages' => $newCopyData['pages'],
+            'lamination' => $newCopyData['lamination'],
             'comment' => $newCopyData['comment'] ?? null,
             'totalPrice' => $newCopyData['price'],
         ];
@@ -191,6 +193,7 @@ class OrderController2 extends Controller
             'configurations.*.pages' => 'required|string',
             'configurations.*.paper_size_id' => 'required|integer|exists:paper_sizes,id',
             'configurations.*.number_of_copies' => 'required|integer|min:1',
+            'configurations.*.lamination' => 'required|boolean',
             'configurations.*.comment' => 'nullable|string|max:255',
             'configurations.*.price' => 'required|numeric',
         ]);
@@ -243,6 +246,7 @@ class OrderController2 extends Controller
                 'paper_size_id' => $config['paper_size_id'],
                 'number_of_copies' => $config['number_of_copies'],
                 'pages' => $config['pages'],
+                'lamination' => $config['lamination'],
                 'comment' => $config['comment'] ?? null,
                 'totalPrice' => $config['price'],
             ];
@@ -368,6 +372,7 @@ class OrderController2 extends Controller
             'copy.pages' => 'sometimes|string',
             'copy.paper_size_id' => 'sometimes|integer|exists:paper_sizes,id',
             'copy.number_of_copies' => 'sometimes|integer|min:1',
+            'copy.lamination' => 'sometimes|boolean',
             'copy.comment' => 'nullable|string|max:255',
             'copy.price' => 'sometimes|numeric',
         ]);
