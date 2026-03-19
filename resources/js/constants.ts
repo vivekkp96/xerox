@@ -1,7 +1,7 @@
 export const CONSTANTS = {
     USER_TOKEN: 'auth_token',
     ADMIN_TOKEN: 'ad_token',
-    APP_NAME: 'YouPrints',
+    APP_NAME: 'Xerox',
     API: {
         ADMIN_LOGIN: '/api/v1/admin/login',
         ADMIN_ME: '/api/v1/admin/me',

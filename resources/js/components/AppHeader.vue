@@ -9,7 +9,7 @@
                             clip-rule="evenodd" />
                     </svg>
                 </span>
-                <h1 class="welcome-title">YouPrints</h1>
+                <h1 class="welcome-title">Xerox</h1>
             </router-link>
             <div class="header-actions">
                 <router-link  to="/order" class="btn btn-primary">

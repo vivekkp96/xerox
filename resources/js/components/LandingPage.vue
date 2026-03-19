@@ -9,7 +9,7 @@
                             <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clip-rule="evenodd" />
                         </svg>
                     </span>
-                    YouPrints
+                    Xerox
                 </div>
                 <div class="nav-links">
                     <router-link to="/login" class="nav-link">Login</router-link>
@@ -63,7 +63,7 @@
         <section id="features" class="features-section">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Why Choose YouPrints?</h2>
+                    <h2 class="section-title">Why Choose Xerox?</h2>
                     <p class="section-subtitle">We handle your documents with care and precision.</p>
                 </div>
                 <div class="features-grid">
@@ -113,7 +113,7 @@
         <footer class="footer">
             <div class="container footer-content">
                 <div class="footer-brand">
-                    <span class="footer-logo">YouPrints</span>
+                    <span class="footer-logo">Xerox</span>
                     <p>Your trusted partner for all printing needs.</p>
                 </div>
                 <div class="footer-links">
@@ -132,7 +132,7 @@
                 </div>
             </div>
             <div class="container copyright">
-                &copy; {{ new Date().getFullYear() }} YouPrints. All rights reserved.
+                &copy; {{ new Date().getFullYear() }} Xerox. All rights reserved.
             </div>
         </footer>
     </div>

@@ -29,7 +29,7 @@ const routes = [
         path: '/',
         name: 'landing',
         component: LandingPage,
-        meta: { title: 'YouPrints - Home' }
+        meta: { title: 'Xerox - Home' }
     },
     {
         path: '/register',

@@ -2,6 +2,23 @@
     <div class="admin-settings-container">
         <AdminHeader />
 
+        <div class="settings-navigation">
+            <router-link 
+                :to="{ path: route.path }" 
+                class="nav-tab" 
+                :class="{ 'active-tab': !showLaminationSettings }"
+            >
+                General Settings
+            </router-link>
+            <router-link 
+                :to="{ path: route.path, query: { lamination: 'true' } }" 
+                class="nav-tab" 
+                :class="{ 'active-tab': showLaminationSettings }"
+            >
+                Lamination Settings
+            </router-link>
+        </div>
+
         <div v-if="showLaminationSettings">
             <LaminationSettings
                 @update:success="handleSuccess"
@@ -98,5 +115,32 @@ const handleError = (message) => {
 
 .btn-back:hover {
     background-color: #4b5563;
+}
+
+.settings-navigation {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.nav-tab {
+    text-decoration: none;
+    color: #6b7280;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-tab:hover {
+    color: #374151;
+    background-color: #f3f4f6;
+}
+
+.nav-tab.active-tab {
+    color: #2563eb;
+    background-color: #eff6ff;
 }
 </style>
