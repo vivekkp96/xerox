@@ -13,12 +13,14 @@ abstract class Controller
             'application/pdf',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'text/markdown',
         ];
 
         if (str_starts_with($mimeType, 'image/') || in_array($mimeType, $allowedMimeTypes)) {
             return null;
         }
 
-        return "Invalid file type for file '{$filename}'. Allowed types: Images, PDF, DOC, DOCX.";
+        return "Invalid file type for file '{$filename}'. Allowed types: Images, PDF, DOC, DOCX, TXT, MD.";
     }
 }

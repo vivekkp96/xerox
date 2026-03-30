@@ -24,7 +24,7 @@
                         ref="fileInput"
                         class="file-input-hidden"
                         id="documents" type="file" multiple
-                        accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,.md"
                         @change="handleFileUpload"
                         :disabled="!canAddItems">
                     
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="upload-footer">
-                    <span class="hint">Supported formats: PDF, DOCX (Max 10 files)</span>
+                    <span class="hint">Supported formats: PDF, DOCX, TXT, MD (Max 10 files)</span>
                 </div>
             </div>
                 </div>
@@ -261,7 +261,7 @@
                                     ref="sidebarFileInput"
                                     class="file-input-hidden"
                                     type="file" multiple
-                                    accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                    accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,.md"
                                     @change="handleFileUpload"
                                     :disabled="!canAddItems">
                                 <span class="compact-upload-text">Click or Drop files here</span>
@@ -521,10 +521,13 @@ const processFiles = async (fileList) => {
     isError.value = false;
     const files = Array.from(fileList);
 
-    const validFiles = files.filter(file => isValidFileType(file));
+    const validFiles = files.filter(file => {
+        const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        return isValidFileType(file) || ['.txt', '.md'].includes(extension);
+    });
 
     if (validFiles.length < files.length) {
-        toast.error('Some files were ignored. Only Images, PDF, DOC, and DOCX are allowed.');
+        toast.error('Some files were ignored. Only Images, PDF, DOC, DOCX, TXT, and MD are allowed.');
         return;
         // displayError('Some files were ignored. Only Images, PDF, DOC, and DOCX are allowed.');
     }

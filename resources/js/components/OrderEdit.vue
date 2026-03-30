@@ -35,7 +35,7 @@
                         ref="fileInput"
                         class="file-input-hidden"
                         id="documents" type="file" multiple
-                        accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,.md"
                         @change="handleFileUpload"
                         :disabled="!canAddItems">
                     
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div class="upload-footer">
-                    <span class="hint">Supported formats: PDF, DOCX (Max 10 files)</span>
+                    <span class="hint">Supported formats: PDF, DOCX, TXT, MD (Max 10 files)</span>
                 </div>
             </div>
 
@@ -264,7 +264,7 @@
                                     ref="sidebarFileInput"
                                     class="file-input-hidden"
                                     type="file" multiple
-                                    accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                    accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,.md"
                                     @change="handleFileUpload"
                                     :disabled="!canAddItems">
                                 <span class="compact-upload-text">Click or Drop files here</span>
@@ -778,8 +778,9 @@ const processFiles = async (fileList) => {
     try {
         for (const file of files) {
 
-            if (!isValidFileType(file)) {
-                toast.error('Invalid file type. Only PDF, Images, DOC, and DOCX are allowed.');
+            const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+            if (!isValidFileType(file) && !['.txt', '.md'].includes(extension)) {
+                toast.error('Invalid file type. Only PDF, Images, DOC, DOCX, TXT, and MD are allowed.');
                 continue;
             }
 
